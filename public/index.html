@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SocialAudit — Client Instagram &amp; Facebook Audits</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◉</span>
+      <h1>SocialAudit</h1>
+      <span id="demoBadge" class="badge hidden">demo mode</span>
+    </div>
+    <div class="topbar-right">
+      <span id="aiBadge" class="badge hidden">AI suggestions on</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Link-based audit -->
+    <section class="card link-audit">
+      <h2>Quick audit by link</h2>
+      <p class="muted">Paste any connected Instagram or Facebook page link to pull its audit.</p>
+      <form id="linkForm" class="row">
+        <input id="linkInput" type="text" placeholder="https://instagram.com/yourclient  or  @yourclient" />
+        <button type="submit" class="primary">Audit link</button>
+      </form>
+      <div id="linkResult"></div>
+    </section>
+
+    <!-- Clients -->
+    <section class="card">
+      <div class="row spread">
+        <h2>Clients</h2>
+        <button id="addClientBtn" class="primary">+ Add client</button>
+      </div>
+      <form id="clientForm" class="stack hidden">
+        <input id="clientName" placeholder="Client name (required)" />
+        <input id="clientIndustry" placeholder="Industry (e.g. coffee, fitness, SaaS)" />
+        <input id="clientBrand" placeholder="Brand description — used by the AI to tailor suggestions" />
+        <div class="row">
+          <button type="submit" class="primary">Save client</button>
+          <button type="button" id="cancelClient" class="ghost">Cancel</button>
+        </div>
+      </form>
+      <ul id="clientList" class="client-list"></ul>
+    </section>
+
+    <!-- Client detail -->
+    <section id="detail" class="hidden">
+      <div class="card">
+        <div class="row spread">
+          <div>
+            <h2 id="detailName"></h2>
+            <p id="detailMeta" class="muted"></p>
+          </div>
+          <div class="row">
+            <button id="connectBtn" class="primary">Connect Instagram / Facebook</button>
+            <button id="deleteClientBtn" class="danger ghost">Delete client</button>
+          </div>
+        </div>
+        <h3>Connected accounts</h3>
+        <ul id="connList" class="conn-list"></ul>
+      </div>
+
+      <div class="card">
+        <div class="row spread">
+          <h2>Audit</h2>
+          <div class="row">
+            <button id="runAuditBtn" class="primary">Run audit</button>
+            <button id="suggestionsBtn" class="secondary">AI suggestions</button>
+            <button id="calendarBtn" class="secondary">30-day calendar</button>
+          </div>
+        </div>
+        <div id="auditArea"><p class="muted">Run an audit to score the account.</p></div>
+      </div>
+
+      <div class="card hidden" id="suggestionsCard">
+        <h2>Suggestions</h2>
+        <div id="suggestionsArea"></div>
+      </div>
+
+      <div class="card hidden" id="calendarCard">
+        <h2>Content calendar</h2>
+        <div id="calendarArea"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
