@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "wrangler": "^4.151.1"
+  },
+  "allowScripts": {
+    "workerd@1.20261012.1": true
   }
 }
