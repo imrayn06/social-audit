@@ -1,0 +1,14 @@
+{
+  "name": "social-audit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "dev:wrangler": "wrangler dev",
+    "db:local": "wrangler d1 execute social-audit --local --file=schema.sql",
+    "db:remote": "wrangler d1 execute social-audit --remote --file=schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.1"
+  }
+}

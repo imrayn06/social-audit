@@ -1,0 +1,19 @@
+{
+  "name": "social-audit",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "social-audit",
+      "database_id": "cdae2693-0618-4f40-9d82-fbca8de8ba0a"
+    }
+  ]
+}

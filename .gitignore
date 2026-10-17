@@ -1,0 +1,8 @@
+node_modules/
+.wrangler/
+.dev/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.devsqlite
+C:/sfstate/
