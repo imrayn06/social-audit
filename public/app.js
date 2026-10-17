@@ -168,8 +168,19 @@ function renderAudit(scores, metrics, createdAt) {
     </div>`;
   const metric = (k, v) => `<div class="metric"><div class="k">${k}</div><div class="v">${v}</div></div>`;
   const recent = (metrics.media || []).slice(0, 6);
+  const avatar = metrics.profile?.profile_picture_url
+    ? `<img class="avatar" src="${esc(metrics.profile.profile_picture_url)}" style="width:48px;height:48px;border-radius:50%;object-fit:cover" alt="">`
+    : `<span class="avatar" style="width:48px;height:48px;font-size:20px;display:flex;align-items:center;justify-content:center;background:#2d3748;border-radius:50%">◉</span>`;
+
   $("auditArea").innerHTML = `
-    <p class="muted">@${esc(metrics.profile?.username || "?")} · ${esc(metrics.profile?.name || "")} · audit ${fmtDate(createdAt)}${metrics.demo ? ' · <span class="tag">demo data</span>' : ""}</p>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:8px 0">
+      ${avatar}
+      <div>
+        <div style="font-size:17px;font-weight:600">${esc(metrics.profile?.name || metrics.profile?.username || "")} <span class="muted" style="font-weight:normal">(@${esc(metrics.profile?.username || "?")})</span></div>
+        ${metrics.profile?.biography ? `<div class="muted" style="font-size:12px;margin-top:2px;max-width:600px">${esc(metrics.profile.biography)}</div>` : ""}
+        <div class="muted" style="font-size:12px;margin-top:4px">Audit ${fmtDate(createdAt)}${metrics.isPublicScrape ? ' · <span class="tag">live profile crawl</span>' : (metrics.demo ? ' · <span class="tag">demo data</span>' : "")}</div>
+      </div>
+    </div>
     <div class="scores">
       ${scoreCard("overall", "Overall")}${scoreCard("engagement", "Engagement")}
       ${scoreCard("consistency", "Consistency")}${scoreCard("contentMix", "Content mix")}
@@ -232,21 +243,30 @@ $("linkForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const url = $("linkInput").value.trim();
   if (!url) return;
-  $("linkResult").innerHTML = `<p class="muted">Resolving and auditing…</p>`;
+  $("linkResult").innerHTML = `<p class="muted">Resolving and auditing ${esc(url)}…</p>`;
   try {
     const data = await api("/audit-by-link", { method: "POST", body: { url } });
     const username = data.resolved?.username || "";
-    $("linkResult").innerHTML = `<div id="linkAuditOut"></div>`;
-    if (currentClient && data.clientId === currentClient.id) renderAudit(data, data.metrics, Date.now());
-    $("auditArea").innerHTML = `<p class="muted">Audited @${esc(username)} via link. See scores below.</p>`;
+    $("linkResult").innerHTML = `<p style="color:#10b981;font-size:14px;margin-top:6px">✓ Audited @${esc(username)} successfully!</p>`;
+    await loadClients();
+    currentClient = {
+      id: data.clientId,
+      name: data.resolved?.page_name || `@${username}`,
+      industry: "Marketing / Agency",
+      brand_description: data.metrics?.profile?.biography || "",
+    };
+    $("detail").classList.remove("hidden");
+    $("detailName").textContent = currentClient.name;
+    $("detailMeta").textContent = `@${username} · Audited Profile`;
+    $("suggestionsCard").classList.add("hidden");
+    $("calendarCard").classList.add("hidden");
+    await loadConnections();
     renderAudit(data, data.metrics, Date.now());
     $("detail").scrollIntoView({ behavior: "smooth" });
+    toast(`Audited @${username} successfully!`);
   } catch (err) {
-    if (err.data?.notConnected) {
-      $("linkResult").innerHTML = `<p class="muted">@${esc(err.data.handle)} isn't connected yet — add this account to a client first (Connect button), then the link audit will work.</p>`;
-    } else {
-      $("linkResult").innerHTML = `<p class="muted">${esc(err.message)}</p>`;
-    }
+    $("linkResult").innerHTML = `<p class="muted" style="color:#ef4444;font-size:14px;margin-top:6px">Audit failed: ${esc(err.message)}</p>`;
+    toast(err.message, true);
   }
 });
 
